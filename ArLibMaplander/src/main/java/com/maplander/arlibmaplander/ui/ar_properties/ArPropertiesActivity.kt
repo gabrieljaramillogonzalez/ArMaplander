@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.ar.core.ArCoreApk
 import com.google.ar.core.TrackingState
 import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.Node
@@ -34,7 +35,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.LocationScene
-import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
 import java.lang.ref.WeakReference
 import java.util.concurrent.CompletableFuture
 
