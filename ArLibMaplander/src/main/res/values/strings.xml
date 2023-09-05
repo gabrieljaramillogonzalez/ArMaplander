@@ -1,0 +1,8 @@
+<resources>
+    <string name="arcore_not_installed">Por favor instale ARCore</string>
+    <string name="arcore_not_updated">Por favor actualice ARCore</string>
+    <string name="app_not_updated">Por favor actualiza esta aplicación</string>
+    <string name="arcore_not_supported">Este dispositivo no es compatible con AR</string>
+    <string name="camera_and_location_permission_request">Se necesitan permisos de ubicación y cámara para utilizar esta función</string>
+    <string name="loading_message">Cargando tu ubicación actual...</string>
+</resources>
