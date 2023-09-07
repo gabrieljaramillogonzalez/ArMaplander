@@ -5,4 +5,52 @@
     <string name="arcore_not_supported">Este dispositivo no es compatible con AR</string>
     <string name="camera_and_location_permission_request">Se necesitan permisos de ubicación y cámara para utilizar esta función</string>
     <string name="loading_message">Cargando tu ubicación actual...</string>
+
+    <string-array name="offering_type_array">
+        <item>En venta</item>
+        <item>En renta</item>
+    </string-array>
+
+    <string name="sell">Venta</string>
+    <string name="lease">Renta</string>
+    <string name="dwelling">Vivienda</string>
+    <string name="retail">Comercio</string>
+    <string name="office">Oficina</string>
+    <string name="house">Casa</string>
+    <string name="apartment">Departamento</string>
+    <string name="all">Todos</string>
+    <string name="land">Terreno</string>
+    <string name="warehouse">Bodega</string>
+    <string name="real_estate_investment">Inversión</string>
+    <string name="room">Habitación</string>
+    <string name="the_house">la casa</string>
+    <string name="the_office">la oficina</string>
+    <string name="the_retail">el local</string>
+    <string name="the_land">el terreno</string>
+    <string name="the_warehouse">la bodega</string>
+    <string name="the_apartment">el departamento</string>
+    <string name="the_real_estate_investment">la inversión</string>
+    <string name="the_room">la habitación</string>
+
+    <string name="dwellings">Viviendas</string>
+    <string name="retails">Comercios</string>
+    <string name="officess">Oficinas</string>
+    <string name="houses">Casas</string>
+    <string name="apartments">Departamentos</string>
+    <string name="lands">Terrenos</string>
+    <string name="warehouses">Bodegas</string>
+    <string name="real_estate_investments">Inversiónes</string>
+    <string name="rooms">Habitaciones</string>
+    <string name="ready">Lista para anunciar</string>
+    <string name="draft">Borrador</string>
+    <string name="hidden">Oculta</string>
+    <string name="expired">Expirada</string>
+    <string name="empty" translatable="false" />
+    <string name="announced">Anunciada</string>
+    <string name="day"> Día</string>
+    <string name="days"> Días</string>
+    <string name="some_error">Ocurrió un error y ya lo hemos notificado a Soporte Técnico</string>
+    <string name="sq_m">m<sup>2</sup></string>
+    <string name="sq_ft">ft<sup>2</sup></string>
+    <string name="communication_error_message">Ocurrió una falla en la comunicación con el servidor. Por favor inténtelo nuevamente</string>
 </resources>

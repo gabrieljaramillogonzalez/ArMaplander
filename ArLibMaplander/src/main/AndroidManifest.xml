@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.maplander.arlibmaplander">
+    package="com.maplander.arlibmaplander" >
 
-    <uses-feature android:name="android.hardware.location.gps"/>
+    <uses-feature android:name="android.hardware.location.gps" />
 
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-feature android:name="android.hardware.camera.ar" android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.camera.ar"
+        android:required="true" />
 
-    <application
-        android:supportsRtl="true">
+    <application android:supportsRtl="true" >
+        <activity
+            android:name=".ui.ar_properties_map.ArPropertiesMapActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".ui.ar_properties.ArPropertiesActivity"
             android:exported="false"
-            android:theme="@style/AppTheme">
-        </activity>
+            android:theme="@style/AppTheme" />
 
         <meta-data
             android:name="com.google.ar.core"
-            android:value="required"/>
+            android:value="required" />
     </application>
 
 </manifest>
