@@ -5,4 +5,49 @@
     <string name="arcore_not_supported">This device does not support AR</string>
     <string name="camera_and_location_permission_request">Location and Camera permissions are needed to use this feature</string>
     <string name="loading_message">Loading your current location ...</string>
+
+    <string-array name="offering_type_array">
+        <item>For sale</item>
+        <item>For lease</item>
+    </string-array>
+    <string name="sell">Sale</string>
+    <string name="lease">Lease</string>
+    <string name="room">Room</string>
+    <string name="dwelling">Residential</string>
+    <string name="retail">Retail</string>
+    <string name="office">Office</string>
+    <string name="house">House</string>
+    <string name="apartment">Apartment</string>
+    <string name="all">All</string>
+    <string name="land">Land</string>
+    <string name="warehouse">Industrial</string>
+    <string name="real_estate_investment">Investment</string>
+    <string name="the_house">the house</string>
+    <string name="the_office">the office</string>
+    <string name="the_retail">the store</string>
+    <string name="the_land">the land</string>
+    <string name="the_warehouse">the warehouse</string>
+    <string name="the_apartment">the apartment</string>
+    <string name="the_real_estate_investment">the investment</string>
+    <string name="the_room">the room</string>
+    <string name="dwellings">Dwellings</string>
+    <string name="retails">Retails</string>
+    <string name="officess">Offices</string>
+    <string name="houses">Houses</string>
+    <string name="apartments">Apartments</string>
+    <string name="lands">Land</string>
+    <string name="warehouses">Warehouses</string>
+    <string name="real_estate_investments">Investments</string>
+    <string name="rooms">Rooms</string>
+    <string name="ready">Ready to announce</string>
+    <string name="draft">Draft</string>
+    <string name="hidden">Hidden</string>
+    <string name="expired">Expired</string>
+    <string name="announced">Posted</string>
+    <string name="day"> Day</string>
+    <string name="days"> Days</string>
+    <string name="some_error">An error occurred and we have already notified Technical Support</string>
+    <string name="sq_m">m2</string>
+    <string name="sq_ft">sq&#160;ft</string>
+    <string name="communication_error_message">Sorry. Server connection failed. Please try again.</string>
 </resources>

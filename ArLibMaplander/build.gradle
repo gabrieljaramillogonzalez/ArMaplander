@@ -1,6 +1,10 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+def lifecycle_version = "2.5.1"
+def buildDate = new Date().format("yyyyMMdd_HHmm")
 
 android {
     namespace 'com.maplander.arlibmaplander'
@@ -8,26 +12,55 @@ android {
 
     defaultConfig {
         minSdkVersion 24
-        targetSdk 33
-
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0.0"
+        renderscriptTargetApi 18
+        renderscriptSupportModeEnabled true
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+        buildConfigField 'String', 'FIABCI_CHANNEL_PATH', '"_ah/api/fiabci/v1/"'
+        buildConfigField 'int', 'BRAND_TYPE', '9'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"]
+            }
+        }
     }
 
     buildTypes {
-        debug{
-            debuggable true
-        }
-
         release {
-            debuggable false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            versionNameSuffix "-release_${buildDate}"
+
+        }
+        debug {
+            minifyEnabled false
         }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    dataBinding {
+        enabled = true
+    }
+    flavorDimensions "version"
+    productFlavors {
+        production {
+            dimension "version"
+            buildConfigField 'String', 'BASE_URL_GMLS', '"https://opi-backend.appspot.com/"'
+        }
+        development {
+            dimension "version"
+            buildConfigField 'String', 'BASE_URL_GMLS', '" https://inmobimapa-backend-develop.appspot.com/"'
+        }
     }
 }
 
@@ -42,6 +75,8 @@ dependencies {
     // Glide - An image loading and caching library for Android
     // https://github.com/bumptech/glide
     implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -55,4 +90,21 @@ dependencies {
 
     //location library
     implementation 'com.github.appoly:ARCore-Location:1.2'
+
+    //implementation "android.arch.lifecycle:extensions:2.2.0"
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    // Lifecycles only (without ViewModel or LiveData)
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    // Saved state module for ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.18'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.7'
+
+    kapt 'com.android.databinding:compiler:3.1.4'
 }

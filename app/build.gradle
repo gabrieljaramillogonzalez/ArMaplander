@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+def buildDate = new Date().format("yyyyMMdd_HHmm")
 
 android {
     namespace 'com.maplander.armaplander'
@@ -11,25 +12,59 @@ android {
         minSdk 24
         targetSdk 33
         versionCode 1
-        versionName "1.0"
-
+        versionName "1.0.0"
+        renderscriptTargetApi 18
+        renderscriptSupportModeEnabled true
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+        buildConfigField 'String', 'FIABCI_CHANNEL_PATH', '"_ah/api/fiabci/v1/"'
+        buildConfigField 'String', 'BCARD_CHANNEL_PATH', '"_ah/api/communicationchannel/v1/"'
+        buildConfigField 'String', 'COMMON_CHANNEL_PATH', '"_ah/api/common/v1/"'
+        buildConfigField 'int', 'BRAND_TYPE', '9'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"]
+            }
+        }
     }
 
     buildTypes {
-        debug{
-            debuggable true
-        }
-
         release {
-            debuggable false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            versionNameSuffix "-release_${buildDate}"
+
         }
+        debug {
+            minifyEnabled false
+            debuggable true
+            versionNameSuffix "-debug_${buildDate}"
+        }
+    }
+    dataBinding {
+        enabled = true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    flavorDimensions "version"
+    productFlavors {
+        production {
+            dimension "version"
+            buildConfigField 'String', 'BASE_URL_GMLS', '"https://opi-backend.appspot.com/"'
+        }
+        development {
+            dimension "version"
+            buildConfigField 'String', 'BASE_URL_GMLS', '" https://inmobimapa-backend-develop.appspot.com/"'
+            versionNameSuffix "-dev"
+            applicationIdSuffix ".develop"
+        }
     }
 }
 

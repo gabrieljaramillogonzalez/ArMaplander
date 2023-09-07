@@ -12,18 +12,17 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.google.ar.core.ArCoreApk
 import com.google.ar.core.TrackingState
 import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.gson.GsonBuilder
 import com.maplander.arlibmaplander.R
-import com.maplander.arlibmaplander.api.FoursquareAPI
-import com.maplander.arlibmaplander.model.Geolocation
-import com.maplander.arlibmaplander.model.Venue
-import com.maplander.arlibmaplander.model.VenueWrapper
-import com.maplander.arlibmaplander.model.converter.VenueTypeConverter
+import com.maplander.arlibmaplander.data.api.FoursquareAPI
+import com.maplander.arlibmaplander.data.db.model.Geolocation
+import com.maplander.arlibmaplander.data.db.model.Venue
+import com.maplander.arlibmaplander.data.db.model.VenueWrapper
+import com.maplander.arlibmaplander.data.db.model.converter.VenueTypeConverter
 import com.maplander.arlibmaplander.utils.AugmentedRealityLocationUtils
 import com.maplander.arlibmaplander.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_augmented_reality_location.*
@@ -154,13 +153,18 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
 
     private fun fetchVenues(deviceLatitude: Double, deviceLongitude: Double) {
         loadingDialog.dismiss()
-        userGeolocation = Geolocation(deviceLatitude.toString(), deviceLongitude.toString())
+        userGeolocation = Geolocation(
+            deviceLatitude.toString(),
+            deviceLongitude.toString()
+        )
         apiQueryParams["ll"] = "$deviceLatitude,$deviceLongitude"
         foursquareAPI.searchVenues(apiQueryParams).enqueue(this)
     }
 
     override fun onResponse(call: Call<VenueWrapper>, response: Response<VenueWrapper>) {
-        val venueWrapper = response.body() ?: VenueWrapper(listOf())
+        val venueWrapper = response.body() ?: VenueWrapper(
+            listOf()
+        )
         venuesSet.clear()
         venuesSet.addAll(venueWrapper.venueList)
         areAllMarkersLoaded = false
@@ -227,7 +231,6 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
                         locationMarker?.anchorNode?.distance ?: 0
                     )
             }
-
 
             val frame = arSceneView!!.arFrame ?: return@addOnUpdateListener
             if (frame.camera.trackingState != TrackingState.TRACKING) {
