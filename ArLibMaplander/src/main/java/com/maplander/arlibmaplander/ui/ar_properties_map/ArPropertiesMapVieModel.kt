@@ -3,6 +3,8 @@ package com.maplander.arlibmaplander.ui.ar_properties_map
 import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.lib.filebrowserlibrary.data.core.ConstantsLib
 import com.maplander.arlibmaplander.R
 import com.maplander.arlibmaplander.data.db.enum.OfferingTypeEnum

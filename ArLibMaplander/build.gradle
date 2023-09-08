@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
 
 def lifecycle_version = "2.5.1"
@@ -34,22 +34,22 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
 //            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             versionNameSuffix "-release_${buildDate}"
 
         }
         debug {
-            minifyEnabled false
+            minifyEnabled true
         }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    dataBinding {
-        enabled = true
+    buildFeatures{
+        viewBinding true
     }
     flavorDimensions "version"
     productFlavors {
@@ -81,7 +81,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.31"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.21"
     implementation 'androidx.media:media:1.0.1'
 
     //Retrofit
@@ -98,6 +98,14 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     // Lifecycles only (without ViewModel or LiveData)
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.5.1"
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.5.1"
+
+    implementation "androidx.fragment:fragment:1.5.5"
+    implementation "androidx.fragment:fragment-ktx:1.5.5"
+    debugImplementation "androidx.fragment:fragment-testing:1.5.5"
+
     // Saved state module for ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
     implementation 'com.github.bumptech.glide:glide:4.11.0'

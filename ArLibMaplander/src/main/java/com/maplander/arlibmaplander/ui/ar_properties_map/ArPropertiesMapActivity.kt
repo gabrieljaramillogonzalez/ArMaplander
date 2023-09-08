@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -17,9 +17,7 @@ import com.google.ar.core.exceptions.UnavailableException
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.maplander.arlibmaplander.R
 import com.maplander.arlibmaplander.data.db.model.Geolocation
-import com.maplander.arlibmaplander.data.db.model.Venue
 import com.maplander.arlibmaplander.data.db.model.gr.model.PropertyLite
-import com.maplander.arlibmaplander.databinding.ActivityArPropertiesMapBinding
 import com.maplander.arlibmaplander.ui.base.BaseActivity
 import com.maplander.arlibmaplander.utils.AugmentedRealityLocationUtils
 import com.maplander.arlibmaplander.utils.PermissionUtils
@@ -28,8 +26,9 @@ import uk.co.appoly.arcorelocation.LocationScene
 import java.lang.ref.WeakReference
 import java.util.concurrent.CompletableFuture
 import com.google.ar.sceneform.Node
-import kotlinx.android.synthetic.main.activity_ar_properties_map.*
-import kotlinx.android.synthetic.main.property_layout_renderable.view.*
+import androidx.activity.viewModels
+import androidx.cardview.widget.CardView
+import com.maplander.arlibmaplander.databinding.ActivityArPropertiesMapBinding
 
 class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
 
@@ -42,7 +41,7 @@ class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
 
     private val resumeArElementsTask = Runnable {
         locationScene?.resume()
-        ArPropertiesMap_arSceneView.resume()
+        binding.ArPropertiesMapArSceneView.resume()
     }
 
     private var userGeolocation = Geolocation.EMPTY_GEOLOCATION
@@ -50,15 +49,17 @@ class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
     private var propertiesLiteSet: MutableSet<PropertyLite> = mutableSetOf()
     private var areAllMarkersLoaded = false
 
+    private val viewModel: ArPropertiesMapVieModel by viewModels ()
 
-    private var viewModel = ArPropertiesMapVieModel()
+    private lateinit var binding: ActivityArPropertiesMapBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = DataBindingUtil.setContentView<ActivityArPropertiesMapBinding>(this,R.layout.activity_ar_properties_map)
-        binding.viewModel = viewModel
-        binding.executePendingBindings()
+        binding = ActivityArPropertiesMapBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         hideAppBar()
+
     }
 
     private fun configAttach(){
@@ -69,7 +70,7 @@ class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
 
     override fun setUp() {
         viewModel.isLoading.observe(this, Observer<Boolean>{
-            ArPropertiesMap_rvProgress.visibility = if (it) View.VISIBLE else View.GONE
+            binding.ArPropertiesMapRvProgress.visibility = if (it) View.VISIBLE else View.GONE
         })
         viewModel.areAllMarkersLoaded.observe(this, Observer<Boolean>{
             areAllMarkersLoaded = it
@@ -93,7 +94,7 @@ class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
     }
 
     private fun updatePropertiesMarkers() {
-        ArPropertiesMap_arSceneView.scene.addOnUpdateListener()
+        binding.ArPropertiesMapArSceneView.scene.addOnUpdateListener()
         {
             if (!areAllMarkersLoaded) {
                 return@addOnUpdateListener
@@ -107,7 +108,7 @@ class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
             }
 
 
-            val frame = ArPropertiesMap_arSceneView!!.arFrame ?: return@addOnUpdateListener
+            val frame = binding.ArPropertiesMapArSceneView!!.arFrame ?: return@addOnUpdateListener
             if (frame.camera.trackingState != TrackingState.TRACKING) {
                 return@addOnUpdateListener
             }
@@ -155,9 +156,9 @@ class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
         val node = Node()
         node.renderable = completableFuture.get()
         val nodeLayout = completableFuture.get().view
-        val typeProperty = nodeLayout.typeProperty
-        val address = nodeLayout.address
-        val propertyPrice = nodeLayout.propertyPrice
+        val typeProperty = nodeLayout.findViewById<TextView>(R.id.typeProperty)
+        val address = nodeLayout.findViewById<TextView>(R.id.address)
+        val propertyPrice = nodeLayout.findViewById<TextView>(R.id.propertyPrice)
         typeProperty.text = property.getType()?.name + " "+property.getOffering()?.getDescription(getMContext()!!)?.toLowerCase()
         address.text = property.getAddress()?.getShortAddress()
         propertyPrice.text = property.getPrice().toString()
@@ -170,13 +171,13 @@ class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
             .load(property.getImage())
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .centerCrop()
-            .into(nodeLayout.imageProperty)
+            .into(nodeLayout.findViewById<ImageView>(R.id.imageProperty))
 
         Glide.with(this)
             .load(property.getStockImage())
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .centerCrop()
-            .into(nodeLayout.propertyOffice)
+            .into(nodeLayout.findViewById<ImageView>(R.id.propertyOffice))
         return node
     }
 
@@ -190,7 +191,7 @@ class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
 
             arHandler.post {
                 locationScene?.refreshAnchors()
-                layoutRendarable.contentProperty.visibility = View.VISIBLE
+                layoutRendarable.findViewById<CardView>(R.id.contentProperty).visibility = View.VISIBLE
             }
         }
     }
@@ -208,9 +209,9 @@ class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
 
     override fun onPause() {
         super.onPause()
-        ArPropertiesMap_arSceneView.session?.let {
+        binding.ArPropertiesMapArSceneView.session?.let {
             locationScene?.pause()
-            ArPropertiesMap_arSceneView?.pause()
+            binding.ArPropertiesMapArSceneView?.pause()
         }
     }
 
@@ -222,18 +223,18 @@ class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
         }
     }
     private fun setupSession() {
-        if (ArPropertiesMap_arSceneView == null) {
+        if (binding.ArPropertiesMapArSceneView == null) {
             return
         }
 
-        if (ArPropertiesMap_arSceneView.session == null) {
+        if (binding.ArPropertiesMapArSceneView.session == null) {
             try {
                 val session = AugmentedRealityLocationUtils.setupSession(this, arCoreInstallRequested)
                 if (session == null) {
                     arCoreInstallRequested = true
                     return
                 } else {
-                    ArPropertiesMap_arSceneView.setupSession(session)
+                    binding.ArPropertiesMapArSceneView.setupSession(session)
                 }
             } catch (e: UnavailableException) {
                 AugmentedRealityLocationUtils.handleSessionException(this, e)
@@ -241,7 +242,7 @@ class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
         }
 
         if (locationScene == null) {
-            locationScene = LocationScene(this, ArPropertiesMap_arSceneView)
+            locationScene = LocationScene(this, binding.ArPropertiesMapArSceneView)
             locationScene!!.setMinimalRefreshing(true)
             locationScene!!.setOffsetOverlapping(true)
 //            locationScene!!.setRemoveOverlapping(true)
@@ -263,6 +264,7 @@ class ArPropertiesMapActivity :  BaseActivity<ArPropertiesMapVieModel>()  {
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, results: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, results)
         if (!PermissionUtils.hasLocationAndCameraPermissions(this)) {
             Toast.makeText(
                 this, R.string.camera_and_location_permission_request, Toast.LENGTH_LONG

@@ -1,12 +1,16 @@
 package com.maplander.arlibmaplander.ui.ar_properties
 
+import android.media.Image
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -23,10 +27,9 @@ import com.maplander.arlibmaplander.data.db.model.Geolocation
 import com.maplander.arlibmaplander.data.db.model.Venue
 import com.maplander.arlibmaplander.data.db.model.VenueWrapper
 import com.maplander.arlibmaplander.data.db.model.converter.VenueTypeConverter
+import com.maplander.arlibmaplander.databinding.ActivityAugmentedRealityLocationBinding
 import com.maplander.arlibmaplander.utils.AugmentedRealityLocationUtils
 import com.maplander.arlibmaplander.utils.PermissionUtils
-import kotlinx.android.synthetic.main.activity_augmented_reality_location.*
-import kotlinx.android.synthetic.main.location_layout_renderable.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -46,10 +49,11 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
     private var arHandler = Handler(Looper.getMainLooper())
 
     lateinit var loadingDialog: AlertDialog
+    private lateinit var binding: ActivityAugmentedRealityLocationBinding
 
     private val resumeArElementsTask = Runnable {
         locationScene?.resume()
-        arSceneView.resume()
+        binding.arSceneView.resume()
     }
 
     lateinit var foursquareAPI: FoursquareAPI
@@ -62,7 +66,9 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_augmented_reality_location)
+        binding = ActivityAugmentedRealityLocationBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         setupRetrofit()
         setupLoadingDialog()
     }
@@ -74,9 +80,9 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
 
     override fun onPause() {
         super.onPause()
-        arSceneView.session?.let {
+        binding.arSceneView.session?.let {
             locationScene?.pause()
-            arSceneView?.pause()
+            binding.arSceneView?.pause()
         }
     }
 
@@ -112,18 +118,18 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
     }
 
     private fun setupSession() {
-        if (arSceneView == null) {
+        if (binding.arSceneView == null) {
             return
         }
 
-        if (arSceneView.session == null) {
+        if (binding.arSceneView.session == null) {
             try {
                 val session = AugmentedRealityLocationUtils.setupSession(this, arCoreInstallRequested)
                 if (session == null) {
                     arCoreInstallRequested = true
                     return
                 } else {
-                    arSceneView.setupSession(session)
+                    binding.arSceneView.setupSession(session)
                 }
             } catch (e: UnavailableException) {
                 AugmentedRealityLocationUtils.handleSessionException(this, e)
@@ -131,7 +137,7 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
         }
 
         if (locationScene == null) {
-            locationScene = LocationScene(this, arSceneView)
+            locationScene = LocationScene(this, binding.arSceneView)
             locationScene!!.setMinimalRefreshing(true)
             locationScene!!.setOffsetOverlapping(true)
 //            locationScene!!.setRemoveOverlapping(true)
@@ -219,7 +225,7 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
     }
 
     private fun updateVenuesMarkers() {
-        arSceneView.scene.addOnUpdateListener()
+        binding.arSceneView.scene.addOnUpdateListener()
         {
             if (!areAllMarkersLoaded) {
                 return@addOnUpdateListener
@@ -232,7 +238,7 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
                     )
             }
 
-            val frame = arSceneView!!.arFrame ?: return@addOnUpdateListener
+            val frame = binding.arSceneView!!.arFrame ?: return@addOnUpdateListener
             if (frame.camera.trackingState != TrackingState.TRACKING) {
                 return@addOnUpdateListener
             }
@@ -254,11 +260,11 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
 
             arHandler.post {
                 locationScene?.refreshAnchors()
-                layoutRendarable.pinContainer.visibility = View.VISIBLE
+                layoutRendarable.findViewById<RelativeLayout>(R.id.pinContainer).visibility = View.VISIBLE
             }
         }
         locationMarker.setRenderEvent { locationNode ->
-            layoutRendarable.distance.text = AugmentedRealityLocationUtils.showDistance(locationNode.distance)
+            layoutRendarable.findViewById<TextView>(R.id.distance).text = AugmentedRealityLocationUtils.showDistance(locationNode.distance)
             resumeArElementsTask.run {
                 computeNewScaleModifierBasedOnDistance(locationMarker, locationNode.distance)
             }
@@ -286,8 +292,8 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
         node.renderable = completableFuture.get()
 
         val nodeLayout = completableFuture.get().view
-        val venueName = nodeLayout.name
-        val markerLayoutContainer = nodeLayout.pinContainer
+        val venueName = nodeLayout.findViewById<TextView>(R.id.name)
+        val markerLayoutContainer = nodeLayout.findViewById<RelativeLayout>(R.id.pinContainer)
         venueName.text = venue.name
         markerLayoutContainer.visibility = View.GONE
         nodeLayout.setOnTouchListener { _, _ ->
@@ -298,7 +304,7 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
         Glide.with(this)
             .load(venue.link)
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-            .into(nodeLayout.categoryIcon)
+            .into(nodeLayout.findViewById<ImageView>(R.id.categoryIcon))
 
         return node
     }
@@ -313,6 +319,7 @@ class ArPropertiesActivity : AppCompatActivity() , Callback<VenueWrapper> {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, results: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, results)
         if (!PermissionUtils.hasLocationAndCameraPermissions(this)) {
             Toast.makeText(
                 this, R.string.camera_and_location_permission_request, Toast.LENGTH_LONG

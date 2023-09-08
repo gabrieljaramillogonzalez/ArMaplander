@@ -1,35 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <data>
-        <import type="android.view.View"/>
-        <variable
-            name="viewModel"
-            type="com.maplander.arlibmaplander.ui.ar_properties_map.ArPropertiesMapVieModel"/>
-    </data>
-
-    <FrameLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <com.google.ar.sceneform.ArSceneView
+        android:id="@+id/ArPropertiesMap_arSceneView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <RelativeLayout
+        android:id="@+id/ArPropertiesMap_rvProgress"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.google.ar.sceneform.ArSceneView
-            android:id="@+id/ArPropertiesMap_arSceneView"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <RelativeLayout
-            android:id="@+id/ArPropertiesMap_rvProgress"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/primaryColor"
-                android:alpha="0.7"/>
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"/>
-        </RelativeLayout>
-    </FrameLayout>
-</layout>
+            android:layout_height="match_parent"
+            android:background="@color/primaryColor"
+            android:alpha="0.7"/>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+</LinearLayout>
