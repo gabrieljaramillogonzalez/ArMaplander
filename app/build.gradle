@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
+apply plugin: 'maven-publish'
 def buildDate = new Date().format("yyyyMMdd_HHmm")
 
 android {
@@ -64,6 +65,17 @@ android {
             buildConfigField 'String', 'BASE_URL_GMLS', '" https://inmobimapa-backend-develop.appspot.com/"'
             versionNameSuffix "-dev"
             applicationIdSuffix ".develop"
+        }
+    }
+
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'org.gradle.sample'
+            artifactId = 'library'
+            version = '1.1'
         }
     }
 }
