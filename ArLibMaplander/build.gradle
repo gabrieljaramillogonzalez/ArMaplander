@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'maven-publish'
 
 def buildDate = new Date().format("yyyyMMdd_HHmm")
 
@@ -60,16 +59,6 @@ android {
         development {
             dimension "version"
             buildConfigField 'String', 'BASE_URL_GMLS', '" https://inmobimapa-backend-develop.appspot.com/"'
-        }
-    }
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'com.maplander.armaplander'
-            artifactId = 'library'
-            version = '1.1'
         }
     }
 }
