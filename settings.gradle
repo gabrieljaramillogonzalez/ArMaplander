@@ -1,3 +1,2 @@
 rootProject.name = "ArMaplander"
-include ':app'
-include ':ArLibMaplander'
+include ':app', ':ArLibMaplander'
